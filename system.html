@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="description" content="Harsh Naidu's public Life OS — a gamified daily operating system tracking 12 habits across 6 tracks."/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Life OS · Harsh Naidu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0F1720; --bg2:#131E2A; --surface:#182430; --border:#1E2D3D;
+    --teal:#00A8A8; --text:#E6F1F2; --text2:#94A3B8; --text3:#4A6278;
+    --sans:'Space Grotesk',sans-serif; --mono:'DM Mono',monospace; --max:1100px;
+    --c-system:#00A8A8; --c-body:#34d399; --c-job:#60a5fa;
+    --c-portfolio:#f472b6; --c-hpl:#fb923c; --c-skills:#c084fc;
+  }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; padding-bottom:80px; }
+
+  /* NAV */
+  nav { position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 clamp(20px,4vw,60px); height:64px; background:rgba(15,23,32,0.95); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+  .nav-logo { font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:0.1em; text-decoration:none; color:var(--text); text-transform:uppercase; }
+  .nav-logo .teal { color:var(--teal); }
+  .nav-right { display:flex; align-items:center; gap:28px; }
+  .nav-links { display:flex; gap:32px; }
+  .nav-links a { font-family:var(--mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--text); font-weight:600; transition:color 0.2s; }
+  .nav-links a:hover { color:var(--teal); }
+  .nav-status { display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:10px; letter-spacing:0.08em; color:var(--text3); border:1px solid var(--border); padding:6px 12px; }
+  .status-dot { width:6px; height:6px; border-radius:50%; background:var(--teal); box-shadow:0 0 6px var(--teal); animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .btn-nav { font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:#0F1720; background:var(--teal); padding:10px 20px; transition:opacity 0.2s; }
+  .btn-nav:hover { opacity:0.85; }
+
+  /* HEADER */
+  .os-header { background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%); border-bottom:1px solid var(--border); padding:48px clamp(20px,4vw,60px) 40px; }
+  .os-header-inner { max-width:var(--max); margin:0 auto; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:24px; }
+  .os-eyebrow { font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--teal); margin-bottom:10px; }
+  .os-title { font-family:var(--sans); font-size:clamp(28px,4vw,52px); font-weight:700; letter-spacing:-0.03em; line-height:1.05; }
+  .os-desc { font-family:var(--mono); font-size:12px; color:var(--text3); margin-top:12px; max-width:500px; line-height:1.8; letter-spacing:0.02em; }
+  .os-badge { display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text3); border:1px solid var(--border); padding:10px 16px; background:var(--bg2); white-space:nowrap; align-self:flex-start; }
+  .os-badge .dot { width:6px; height:6px; border-radius:50%; background:var(--teal); }
+
+  /* XP STRIP */
+  .xp-strip { max-width:var(--max); margin:0 auto; padding:24px clamp(20px,4vw,60px); display:flex; align-items:center; gap:24px; flex-wrap:wrap; border-bottom:1px solid var(--border); }
+  .xp-level { display:flex; flex-direction:column; align-items:center; background:var(--surface); border:1px solid var(--border); padding:14px 22px; min-width:84px; }
+  .xp-level-label { font-family:var(--mono); font-size:9px; color:var(--text3); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:4px; }
+  .xp-level-num { font-family:var(--sans); font-size:34px; font-weight:700; color:var(--teal); line-height:1; }
+  .xp-bar-wrap { flex:1; min-width:200px; }
+  .xp-bar-labels { display:flex; justify-content:space-between; margin-bottom:8px; }
+  .xp-bar-labels span { font-family:var(--mono); font-size:10px; color:var(--text3); letter-spacing:0.08em; }
+  .xp-bar-track { background:var(--border); height:6px; overflow:hidden; }
+  .xp-bar-fill { height:100%; background:linear-gradient(90deg,var(--teal),#34d399); width:60%; }
+  .xp-meta { font-family:var(--mono); font-size:11px; color:var(--text3); }
+
+  /* TABS */
+  .tabs-wrap { position:sticky; top:64px; z-index:50; background:var(--bg); border-bottom:1px solid var(--border); }
+  .tabs-inner { max-width:var(--max); margin:0 auto; padding:0 clamp(20px,4vw,60px); display:flex; }
+  .tab-btn { background:none; border:none; cursor:pointer; font-family:var(--mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; padding:16px 20px 14px; color:var(--text3); border-bottom:2px solid transparent; transition:color 0.2s; }
+  .tab-btn.active { color:var(--teal); border-bottom-color:var(--teal); }
+  .tab-btn:hover:not(.active) { color:var(--text2); }
+
+  /* BODY */
+  .os-body { max-width:var(--max); margin:0 auto; padding:32px clamp(20px,4vw,60px); }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+
+  /* READ-ONLY BANNER */
+  .readonly-bar { background:rgba(0,168,168,0.05); border:1px solid rgba(0,168,168,0.2); padding:14px 20px; margin-bottom:32px; display:flex; align-items:center; gap:14px; }
+  .readonly-bar .ro-tag { font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--teal); white-space:nowrap; }
+  .readonly-bar p { font-family:var(--mono); font-size:11px; color:var(--text3); letter-spacing:0.03em; }
+
+  /* TODAY SUMMARY */
+  .today-summary { display:flex; align-items:center; gap:24px; background:var(--surface); border:1px solid var(--border); padding:28px 32px; margin-bottom:36px; flex-wrap:wrap; }
+  .ring-wrap { position:relative; flex-shrink:0; }
+  .ring-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:var(--sans); font-size:16px; font-weight:700; color:var(--text); }
+  .today-stats .today-count { font-family:var(--sans); font-size:24px; font-weight:700; }
+  .today-stats .today-sub { font-family:var(--mono); font-size:11px; color:var(--text3); margin-top:4px; letter-spacing:0.05em; }
+  .today-stats .today-xp { font-family:var(--mono); font-size:11px; color:var(--teal); margin-top:10px; letter-spacing:0.08em; }
+  .today-date { margin-left:auto; text-align:right; }
+  .today-date span { display:block; font-family:var(--mono); font-size:11px; color:var(--text3); letter-spacing:0.08em; line-height:2; }
+
+  /* TRACK GROUP */
+  .track-group { margin-bottom:28px; }
+  .track-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .track-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .track-name { font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; font-weight:500; }
+
+  /* HABIT ROW */
+  .habit-row { display:flex; align-items:center; gap:14px; border:1px solid var(--border); padding:16px 20px; margin-bottom:8px; cursor:default; }
+  .habit-row.done { border-color:rgba(0,168,168,0.2); background:rgba(0,168,168,0.04); }
+  .habit-row:not(.done) { background:var(--bg2); }
+  .habit-check { width:22px; height:22px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); background:var(--bg); }
+  .habit-check.checked { background:var(--teal); border-color:var(--teal); }
+  .habit-check.checked::after { content:'✓'; font-size:13px; color:#0F1720; font-weight:700; }
+  .habit-icon { font-size:16px; flex-shrink:0; }
+  .habit-label { font-family:var(--mono); font-size:13px; letter-spacing:0.02em; flex:1; }
+  .habit-row.done .habit-label { color:var(--text); }
+  .habit-row:not(.done) .habit-label { color:var(--text3); }
+  .habit-xp { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; margin-left:auto; flex-shrink:0; }
+  .habit-row:not(.done) .habit-xp { color:var(--border); }
+
+  /* WEEK */
+  .week-grid { display:flex; gap:10px; margin-bottom:32px; overflow-x:auto; padding-bottom:4px; }
+  .week-day { display:flex; flex-direction:column; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--border); padding:16px 10px; flex-shrink:0; min-width:72px; }
+  .week-day.today { border-color:var(--teal); }
+  .week-day-label { font-family:var(--mono); font-size:9px; letter-spacing:0.15em; text-transform:uppercase; }
+  .week-day.today .week-day-label { color:var(--teal); }
+  .week-day:not(.today) .week-day-label { color:var(--text3); }
+  .week-day-pct { font-family:var(--sans); font-size:17px; font-weight:700; }
+  .week-day-num { font-family:var(--mono); font-size:9px; color:var(--text3); }
+
+  /* HEATMAP */
+  .heatmap-wrap { background:var(--surface); border:1px solid var(--border); padding:28px; margin-bottom:28px; }
+  .heatmap-title { font-family:var(--mono); font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text3); margin-bottom:20px; }
+  .heatmap-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .heatmap-icon { font-size:13px; width:18px; flex-shrink:0; }
+  .heatmap-label { font-family:var(--mono); font-size:10px; color:var(--text3); width:170px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .heatmap-cells { display:flex; gap:5px; margin-left:auto; }
+  .heatmap-cell { width:22px; height:22px; }
+  .heatmap-cell.off { background:var(--border) !important; opacity:0.35; }
+
+  /* TRACKS */
+  .track-card { background:var(--surface); border:1px solid var(--border); padding:22px 28px; margin-bottom:12px; display:flex; align-items:center; gap:22px; }
+  .track-card-info { flex:1; }
+  .track-card-name { font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:5px; font-weight:600; }
+  .track-card-sub { font-family:var(--mono); font-size:11px; color:var(--text3); margin-bottom:12px; }
+  .track-bar-track { background:var(--border); height:4px; overflow:hidden; }
+  .track-bar-fill { height:100%; }
+
+  .spark-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:28px; }
+  .spark-card { background:var(--surface); border:1px solid var(--border); padding:20px; }
+  .spark-label { font-family:var(--mono); font-size:9px; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:10px; }
+  .spark-avg { font-family:var(--sans); font-size:30px; font-weight:700; color:var(--text); line-height:1; }
+  .spark-sub { font-family:var(--mono); font-size:10px; color:var(--text3); margin-top:5px; }
+  .sparkline { display:flex; gap:4px; margin-top:14px; align-items:flex-end; height:28px; }
+  .spark-bar { flex:1; min-height:3px; }
+
+  .system-note { margin-top:28px; background:rgba(0,168,168,0.04); border:1px solid rgba(0,168,168,0.2); padding:24px 28px; }
+  .system-note-label { font-family:var(--mono); font-size:9px; color:var(--teal); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:10px; }
+  .system-note-text { font-family:var(--mono); font-size:12px; color:var(--text3); line-height:1.9; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="harsh_naidu_portfolio_v3.html"><span class="teal">//</span> HARSH NAIDU</a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="harsh_naidu_portfolio_v3.html#work">Work</a>
+      <a href="harsh_naidu_portfolio_v3.html#thinking">Thinking</a>
+      <a href="system.html">System</a>
+      <a href="harsh_naidu_portfolio_v3.html#about">About</a>
+      <a href="harsh_naidu_portfolio_v3.html#contact">Contact</a>
+    </div>
+    <div class="nav-status"><span class="status-dot"></span>Toronto · Open to opportunities</div>
+    <a href="harsh_naidu_portfolio_v3.html#contact" class="btn-nav">Let's talk →</a>
+  </div>
+</nav>
+
+<div class="os-header">
+  <div class="os-header-inner">
+    <div>
+      <div class="os-eyebrow">System.09 · Life OS</div>
+      <h1 class="os-title">How I operate,<br>every day.</h1>
+      <p class="os-desc">A public snapshot of my daily operating system. 12 habits across 6 tracks. Built for compounding, not perfection.</p>
+    </div>
+    <div class="os-badge"><span class="dot"></span>Read-only · Public snapshot</div>
+  </div>
+</div>
+
+<div class="xp-strip">
+  <div class="xp-level">
+    <span class="xp-level-label">Level</span>
+    <span class="xp-level-num">4</span>
+  </div>
+  <div class="xp-bar-wrap">
+    <div class="xp-bar-labels">
+      <span>120 / 200 XP this level</span>
+      <span>🔥 5 day streak</span>
+    </div>
+    <div class="xp-bar-track"><div class="xp-bar-fill"></div></div>
+  </div>
+  <div class="xp-meta">660 XP total · 7-day window</div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('today',this)">Today</button>
+    <button class="tab-btn" onclick="switchTab('week',this)">Week</button>
+    <button class="tab-btn" onclick="switchTab('tracks',this)">Tracks</button>
+  </div>
+</div>
+
+<div class="os-body">
+
+  <div class="readonly-bar">
+    <span class="ro-tag">👁 View only</span>
+    <p>Public snapshot of Harsh's daily system. Representative sample data.</p>
+  </div>
+
+  <!-- TODAY -->
+  <div id="panel-today" class="tab-panel active">
+    <div class="today-summary">
+      <div class="ring-wrap">
+        <svg width="84" height="84" style="transform:rotate(-90deg)">
+          <circle cx="42" cy="42" r="34" fill="none" stroke="var(--border)" stroke-width="7"/>
+          <circle cx="42" cy="42" r="34" fill="none" stroke="var(--teal)" stroke-width="7" stroke-dasharray="213.6" stroke-dashoffset="53.4" stroke-linecap="square"/>
+        </svg>
+        <div class="ring-label">75%</div>
+      </div>
+      <div class="today-stats">
+        <div class="today-count">9 / 12</div>
+        <div class="today-sub">habits complete</div>
+        <div class="today-xp">+90 XP earned today</div>
+      </div>
+      <div class="today-date">
+        <span id="today-weekday">Thursday</span>
+        <span id="today-date">Apr 23</span>
+      </div>
+    </div>
+
+    <!-- Daily System -->
+    <div class="track-group">
+      <div class="track-header"><div class="track-dot" style="background:var(--c-system)"></div><span class="track-name" style="color:var(--c-system)">Daily System</span></div>
+      <div class="habit-row done"><div class="habit-check checked"></div><span class="habit-icon">☀️</span><span class="habit-label">Wake 6am</span><span class="habit-xp" style="color:var(--c-system)">+10 XP</span></div>
+      <div class="habit-row done"><div class="habit-check checked"></div><span class="habit-icon">🧘</span><span class="habit-label">Meditate</span><span class="habit-xp" style="color:var(--c-system)">+10 XP</span></div>
+      <div class="habit-row"><div class="habit-check"></div><span class="habit-icon">📋</span><span class="habit-label">Organise day before bed</span><span class="habit-xp">+10 XP</span></div>
+      <div class="habit-row done"><div class="habit-check checked"></div><span class="habit-icon">☕</span><span class="habit-label">Coffee house deep work</span><span class="habit-xp" style="color:var(--c-system)">+10 XP</span></div>
+    </div>
+
+    <!-- Body -->
+    <div class="track-group">
+      <div class="track-header"><div class="track-dot" style="background:var(--c-body)"></div><span class="track-name" style="color:var(--c-body)">Body</span></div>
+      <div class="habit-row done" style="border-color:rgba(52,211,153,0.2); background:rgba(52,211,153,0.04)"><div class="habit-check checked" style="background:var(--c-body);border-color:var(--c-body)"></div><span class="habit-icon">🏋️</span><span class="habit-label">Gym</span><span class="habit-xp" style="color:var(--c-body)">+10 XP</span></div>
+      <div class="habit-row"><div class="habit-check"></div><span class="habit-icon">🌙</span><span class="habit-label">Sleep by midnight</span><span class="habit-xp">+10 XP</span></div>
+    </div>
+
+    <!-- Job Hunt -->
+    <div class="track-group">
+      <div class="track-header"><div class="track-dot" style="background:var(--c-job)"></div><span class="track-name" style="color:var(--c-job)">Job Hunt</span></div>
+      <div class="habit-row done" style="border-color:rgba(96,165,250,0.2); background:rgba(96,165,250,0.04)"><div class="habit-check checked" style="background:var(--c-job);border-color:var(--c-job)"></div><span class="habit-icon">💼</span><span class="habit-label">Apply to 2 jobs</span><span class="habit-xp" style="color:var(--c-job)">+10 XP</span></div>
+      <div class="habit-row done" style="border-color:rgba(96,165,250,0.2); background:rgba(96,165,250,0.04)"><div class="habit-check checked" style="background:var(--c-job);border-color:var(--c-job)"></div><span class="habit-icon">📣</span><span class="habit-label">LinkedIn post</span><span class="habit-xp" style="color:var(--c-job)">+10 XP</span></div>
+      <div class="habit-row"><div class="habit-check"></div><span class="habit-icon">🤝</span><span class="habit-label">LinkedIn DMs / connections</span><span class="habit-xp">+10 XP</span></div>
+    </div>
+
+    <!-- Portfolio -->
+    <div class="track-group">
+      <div class="track-header"><div class="track-dot" style="background:var(--c-portfolio)"></div><span class="track-name" style="color:var(--c-portfolio)">Portfolio</span></div>
+      <div class="habit-row done" style="border-color:rgba(244,114,182,0.2); background:rgba(244,114,182,0.04)"><div class="habit-check checked" style="background:var(--c-portfolio);border-color:var(--c-portfolio)"></div><span class="habit-icon">🗂️</span><span class="habit-label">Portfolio work</span><span class="habit-xp" style="color:var(--c-portfolio)">+10 XP</span></div>
+    </div>
+
+    <!-- HPL -->
+    <div class="track-group">
+      <div class="track-header"><div class="track-dot" style="background:var(--c-hpl)"></div><span class="track-name" style="color:var(--c-hpl)">HPL</span></div>
+      <div class="habit-row done" style="border-color:rgba(251,146,60,0.2); background:rgba(251,146,60,0.04)"><div class="habit-check checked" style="background:var(--c-hpl);border-color:var(--c-hpl)"></div><span class="habit-icon">🏆</span><span class="habit-label">HPL work</span><span class="habit-xp" style="color:var(--c-hpl)">+10 XP</span></div>
+    </div>
+
+    <!-- Skills -->
+    <div class="track-group">
+      <div class="track-header"><div class="track-dot" style="background:var(--c-skills)"></div><span class="track-name" style="color:var(--c-skills)">Skills</span></div>
+      <div class="habit-row done" style="border-color:rgba(192,132,252,0.2); background:rgba(192,132,252,0.04)"><div class="habit-check checked" style="background:var(--c-skills);border-color:var(--c-skills)"></div><span class="habit-icon">💻</span><span class="habit-label">SQL / AI learning</span><span class="habit-xp" style="color:var(--c-skills)">+10 XP</span></div>
+    </div>
+  </div>
+
+  <!-- WEEK -->
+  <div id="panel-week" class="tab-panel">
+    <div class="week-grid">
+      <div class="week-day"><span class="week-day-label">Thu</span><span class="week-day-pct" style="color:#00A8A8">75%</span><span class="week-day-num">17</span></div>
+      <div class="week-day"><span class="week-day-label">Fri</span><span class="week-day-pct" style="color:#34d399">83%</span><span class="week-day-num">18</span></div>
+      <div class="week-day"><span class="week-day-label">Sat</span><span class="week-day-pct" style="color:#60a5fa">58%</span><span class="week-day-num">19</span></div>
+      <div class="week-day"><span class="week-day-label">Sun</span><span class="week-day-pct" style="color:#60a5fa">50%</span><span class="week-day-num">20</span></div>
+      <div class="week-day"><span class="week-day-label">Mon</span><span class="week-day-pct" style="color:#34d399">83%</span><span class="week-day-num">21</span></div>
+      <div class="week-day"><span class="week-day-label">Tue</span><span class="week-day-pct" style="color:#00A8A8">75%</span><span class="week-day-num">22</span></div>
+      <div class="week-day today"><span class="week-day-label">Wed</span><span class="week-day-pct" style="color:#00A8A8">75%</span><span class="week-day-num">23</span></div>
+    </div>
+
+    <div class="heatmap-wrap">
+      <div class="heatmap-title">7-Day Habit Heatmap</div>
+      <div class="heatmap-row"><span class="heatmap-icon">☀️</span><span class="heatmap-label">Wake 6am</span><div class="heatmap-cells"><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div></div></div>
+      <div class="heatmap-row"><span class="heatmap-icon">🧘</span><span class="heatmap-label">Meditate</span><div class="heatmap-cells"><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div></div></div>
+      <div class="heatmap-row"><span class="heatmap-icon">📋</span><span class="heatmap-label">Organise day before bed</span><div class="heatmap-cells"><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell off"></div></div></div>
+      <div class="heatmap-row"><span class="heatmap-icon">☕</span><span class="heatmap-label">Coffee house deep work</span><div class="heatmap-cells"><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div><div class="heatmap-cell on" style="background:var(--c-system)"></div></div></div>
+      <div class="heatmap-row"><span class="heatmap-icon">🏋️</span><span class="heatmap-label">Gym</span><div class="heatmap-cells"><div class="heatmap-cell on" style="background:var(--c-body)"></div><div class="heatmap-cell on" style="background:var(--c-body)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-body)"></div><div class="heatmap-cell on" style="background:var(--c-body)"></div><div class="heatmap-cell on" style="background:var(--c-body)"></div></div></div>
+      <div class="heatmap-row"><span class="heatmap-icon">🌙</span><span class="heatmap-label">Sleep by midnight</span><div class="heatmap-cells"><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-body)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-body)"></div><div class="heatmap-cell on" style="background:var(--c-body)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell off"></div></div></div>
+      <div class="heatmap-row"><span class="heatmap-icon">💼</span><span class="heatmap-label">Apply to 2 jobs</span><div class="heatmap-cells"><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div></div></div>
+      <div class="heatmap-row"><span class="heatmap-icon">📣</span><span class="heatmap-label">LinkedIn post</span><div class="heatmap-cells"><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div></div></div>
+      <div class="heatmap-row"><span class="heatmap-icon">🤝</span><span class="heatmap-label">LinkedIn DMs</span><div class="heatmap-cells"><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell on" style="background:var(--c-job)"></div><div class="heatmap-cell off"></div></div></div>
+      <div class="heatmap-row"><span class="heatmap-icon">🗂️</span><span class="heatmap-label">Portfolio work</span><div class="heatmap-cells"><div class="heatmap-cell on" style="background:var(--c-portfolio)"></div><div class="heatmap-cell on" style="background:var(--c-portfolio)"></div><div class="heatmap-cell on" style="background:var(--c-portfolio)"></div><div class="heatmap-cell on" style="background:var(--c-portfolio)"></div><div class="heatmap-cell on" style="background:var(--c-portfolio)"></div><div class="heatmap-cell on" style="background:var(--c-portfolio)"></div><div class="heatmap-cell on" style="background:var(--c-portfolio)"></div></div></div>
+      <div class="heatmap-row"><span class="heatmap-icon">🏆</span><span class="heatmap-label">HPL work</span><div class="heatmap-cells"><div class="heatmap-cell on" style="background:var(--c-hpl)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-hpl)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-hpl)"></div><div class="heatmap-cell on" style="background:var(--c-hpl)"></div><div class="heatmap-cell on" style="background:var(--c-hpl)"></div></div></div>
+      <div class="heatmap-row"><span class="heatmap-icon">💻</span><span class="heatmap-label">SQL / AI learning</span><div class="heatmap-cells"><div class="heatmap-cell on" style="background:var(--c-skills)"></div><div class="heatmap-cell on" style="background:var(--c-skills)"></div><div class="heatmap-cell off"></div><div class="heatmap-cell on" style="background:var(--c-skills)"></div><div class="heatmap-cell on" style="background:var(--c-skills)"></div><div class="heatmap-cell on" style="background:var(--c-skills)"></div><div class="heatmap-cell on" style="background:var(--c-skills)"></div></div></div>
+    </div>
+  </div>
+
+  <!-- TRACKS -->
+  <div id="panel-tracks" class="tab-panel">
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;">Today's track progress</div>
+
+    <div class="track-card"><div class="ring-wrap"><svg width="56" height="56" style="transform:rotate(-90deg)"><circle cx="28" cy="28" r="22" fill="none" stroke="var(--border)" stroke-width="5"/><circle cx="28" cy="28" r="22" fill="none" stroke="var(--c-system)" stroke-width="5" stroke-dasharray="138.2" stroke-dashoffset="34.6" stroke-linecap="square"/></svg><div class="ring-label" style="font-size:12px">75%</div></div><div class="track-card-info"><div class="track-card-name" style="color:var(--c-system)">Daily System</div><div class="track-card-sub">3 / 4 habits · 30 XP</div><div class="track-bar-track"><div class="track-bar-fill" style="width:75%;background:var(--c-system)"></div></div></div></div>
+
+    <div class="track-card"><div class="ring-wrap"><svg width="56" height="56" style="transform:rotate(-90deg)"><circle cx="28" cy="28" r="22" fill="none" stroke="var(--border)" stroke-width="5"/><circle cx="28" cy="28" r="22" fill="none" stroke="var(--c-body)" stroke-width="5" stroke-dasharray="138.2" stroke-dashoffset="69.1" stroke-linecap="square"/></svg><div class="ring-label" style="font-size:12px">50%</div></div><div class="track-card-info"><div class="track-card-name" style="color:var(--c-body)">Body</div><div class="track-card-sub">1 / 2 habits · 10 XP</div><div class="track-bar-track"><div class="track-bar-fill" style="width:50%;background:var(--c-body)"></div></div></div></div>
+
+    <div class="track-card"><div class="ring-wrap"><svg width="56" height="56" style="transform:rotate(-90deg)"><circle cx="28" cy="28" r="22" fill="none" stroke="var(--border)" stroke-width="5"/><circle cx="28" cy="28" r="22" fill="none" stroke="var(--c-job)" stroke-width="5" stroke-dasharray="138.2" stroke-dashoffset="45.6" stroke-linecap="square"/></svg><div class="ring-label" style="font-size:12px">67%</div></div><div class="track-card-info"><div class="track-card-name" style="color:var(--c-job)">Job Hunt</div><div class="track-card-sub">2 / 3 habits · 20 XP</div><div class="track-bar-track"><div class="track-bar-fill" style="width:67%;background:var(--c-job)"></div></div></div></div>
+
+    <div class="track-card"><div class="ring-wrap"><svg width="56" height="56" style="transform:rotate(-90deg)"><circle cx="28" cy="28" r="22" fill="none" stroke="var(--border)" stroke-width="5"/><circle cx="28" cy="28" r="22" fill="none" stroke="var(--c-portfolio)" stroke-width="5" stroke-dasharray="138.2" stroke-dashoffset="0" stroke-linecap="square"/></svg><div class="ring-label" style="font-size:11px">100%</div></div><div class="track-card-info"><div class="track-card-name" style="color:var(--c-portfolio)">Portfolio</div><div class="track-card-sub">1 / 1 habits · 10 XP</div><div class="track-bar-track"><div class="track-bar-fill" style="width:100%;background:var(--c-portfolio)"></div></div></div></div>
+
+    <div class="track-card"><div class="ring-wrap"><svg width="56" height="56" style="transform:rotate(-90deg)"><circle cx="28" cy="28" r="22" fill="none" stroke="var(--border)" stroke-width="5"/><circle cx="28" cy="28" r="22" fill="none" stroke="var(--c-hpl)" stroke-width="5" stroke-dasharray="138.2" stroke-dashoffset="0" stroke-linecap="square"/></svg><div class="ring-label" style="font-size:11px">100%</div></div><div class="track-card-info"><div class="track-card-name" style="color:var(--c-hpl)">HPL</div><div class="track-card-sub">1 / 1 habits · 10 XP</div><div class="track-bar-track"><div class="track-bar-fill" style="width:100%;background:var(--c-hpl)"></div></div></div></div>
+
+    <div class="track-card"><div class="ring-wrap"><svg width="56" height="56" style="transform:rotate(-90deg)"><circle cx="28" cy="28" r="22" fill="none" stroke="var(--border)" stroke-width="5"/><circle cx="28" cy="28" r="22" fill="none" stroke="var(--c-skills)" stroke-width="5" stroke-dasharray="138.2" stroke-dashoffset="0" stroke-linecap="square"/></svg><div class="ring-label" style="font-size:11px">100%</div></div><div class="track-card-info"><div class="track-card-name" style="color:var(--c-skills)">Skills</div><div class="track-card-sub">1 / 1 habits · 10 XP</div><div class="track-bar-track"><div class="track-bar-fill" style="width:100%;background:var(--c-skills)"></div></div></div></div>
+
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin:28px 0 16px;">7-day track averages</div>
+    <div class="spark-grid">
+      <div class="spark-card"><div class="spark-label" style="color:var(--c-system)">Daily System</div><div class="spark-avg">79%</div><div class="spark-sub">avg this week</div><div class="sparkline"><div class="spark-bar" style="height:75%;background:var(--c-system)"></div><div class="spark-bar" style="height:85%;background:var(--c-system)"></div><div class="spark-bar" style="height:50%;background:var(--c-system)"></div><div class="spark-bar" style="height:75%;background:var(--c-system)"></div><div class="spark-bar" style="height:100%;background:var(--c-system)"></div><div class="spark-bar" style="height:75%;background:var(--c-system)"></div><div class="spark-bar" style="height:75%;background:var(--c-system)"></div></div></div>
+      <div class="spark-card"><div class="spark-label" style="color:var(--c-body)">Body</div><div class="spark-avg">57%</div><div class="spark-sub">avg this week</div><div class="sparkline"><div class="spark-bar" style="height:50%;background:var(--c-body)"></div><div class="spark-bar" style="height:100%;background:var(--c-body)"></div><div class="spark-bar" style="height:50%;background:var(--c-body)"></div><div class="spark-bar" style="height:50%;background:var(--c-body)"></div><div class="spark-bar" style="height:100%;background:var(--c-body)"></div><div class="spark-bar" style="height:50%;background:var(--c-body)"></div><div class="spark-bar" style="height:50%;background:var(--c-body)"></div></div></div>
+      <div class="spark-card"><div class="spark-label" style="color:var(--c-job)">Job Hunt</div><div class="spark-avg">81%</div><div class="spark-sub">avg this week</div><div class="sparkline"><div class="spark-bar" style="height:100%;background:var(--c-job)"></div><div class="spark-bar" style="height:100%;background:var(--c-job)"></div><div class="spark-bar" style="height:67%;background:var(--c-job)"></div><div class="spark-bar" style="height:67%;background:var(--c-job)"></div><div class="spark-bar" style="height:100%;background:var(--c-job)"></div><div class="spark-bar" style="height:67%;background:var(--c-job)"></div><div class="spark-bar" style="height:67%;background:var(--c-job)"></div></div></div>
+      <div class="spark-card"><div class="spark-label" style="color:var(--c-portfolio)">Portfolio</div><div class="spark-avg">100%</div><div class="spark-sub">avg this week</div><div class="sparkline"><div class="spark-bar" style="height:100%;background:var(--c-portfolio)"></div><div class="spark-bar" style="height:100%;background:var(--c-portfolio)"></div><div class="spark-bar" style="height:100%;background:var(--c-portfolio)"></div><div class="spark-bar" style="height:100%;background:var(--c-portfolio)"></div><div class="spark-bar" style="height:100%;background:var(--c-portfolio)"></div><div class="spark-bar" style="height:100%;background:var(--c-portfolio)"></div><div class="spark-bar" style="height:100%;background:var(--c-portfolio)"></div></div></div>
+      <div class="spark-card"><div class="spark-label" style="color:var(--c-hpl)">HPL</div><div class="spark-avg">71%</div><div class="spark-sub">avg this week</div><div class="sparkline"><div class="spark-bar" style="height:100%;background:var(--c-hpl)"></div><div class="spark-bar" style="height:8%;background:var(--border)"></div><div class="spark-bar" style="height:100%;background:var(--c-hpl)"></div><div class="spark-bar" style="height:8%;background:var(--border)"></div><div class="spark-bar" style="height:100%;background:var(--c-hpl)"></div><div class="spark-bar" style="height:100%;background:var(--c-hpl)"></div><div class="spark-bar" style="height:100%;background:var(--c-hpl)"></div></div></div>
+      <div class="spark-card"><div class="spark-label" style="color:var(--c-skills)">Skills</div><div class="spark-avg">86%</div><div class="spark-sub">avg this week</div><div class="sparkline"><div class="spark-bar" style="height:100%;background:var(--c-skills)"></div><div class="spark-bar" style="height:100%;background:var(--c-skills)"></div><div class="spark-bar" style="height:8%;background:var(--border)"></div><div class="spark-bar" style="height:100%;background:var(--c-skills)"></div><div class="spark-bar" style="height:100%;background:var(--c-skills)"></div><div class="spark-bar" style="height:100%;background:var(--c-skills)"></div><div class="spark-bar" style="height:100%;background:var(--c-skills)"></div></div></div>
+    </div>
+
+    <div class="system-note">
+      <div class="system-note-label">System Note</div>
+      <div class="system-note-text">You are not behind. You are building. The coffee house is the engine — 4 hours a night, 5 nights a week, pointed at the right things in the right order. That is all this needs to be.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const now = new Date();
+  document.getElementById('today-weekday').textContent = now.toLocaleDateString('en-US',{weekday:'long'});
+  document.getElementById('today-date').textContent = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>
