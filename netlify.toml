@@ -1,6 +1,5 @@
-[build]
-  functions = "netlify/functions"
-  publish = "public"
+[functions]
+  directory = "netlify/functions"
 
 [[headers]]
   for = "/.netlify/functions/*"
@@ -8,7 +7,6 @@
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
 
-# Route /api/habits → the function
 [[redirects]]
   from = "/api/habits"
   to = "/.netlify/functions/habits"
